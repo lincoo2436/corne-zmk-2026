@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2026 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -14,71 +14,185 @@
 #include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/reset.h>
 
-&led_strip {
-    chain-length = <27>;
-};
-
 / {
+    combos {
+        compatible = "zmk,combos";
+
+        cb_Esc {
+            bindings = <&kp ESCAPE>;
+            key-positions = <19 20>;
+        };
+    };
+
+    behaviors {
+        escand2layer: escand2layer {
+            compatible = "zmk,behavior-tap-dance";
+            label = "ESCAND2LAYER";
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&tog 2>;
+
+            tapping-term-ms = <160>;
+        };
+
+        brace: brace {
+            compatible = "zmk,behavior-tap-dance";
+            label = "BRACE";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACE>, <&kp RIGHT_BRACE>;
+
+            tapping-term-ms = <200>;
+        };
+
+        etkey: etkey {
+            compatible = "zmk,behavior-tap-dance";
+            label = "ETKEY";
+            #binding-cells = <0>;
+            bindings = <&kp TAB>, <&kp ESC>;
+
+            tapping-term-ms = <160>;
+        };
+
+        pgch: pgch {
+            compatible = "zmk,behavior-tap-dance";
+            label = "PGCH";
+            #binding-cells = <0>;
+            bindings = <&kp PAGE_DOWN>, <&kp PG_UP>;
+
+            tapping-term-ms = <200>;
+        };
+
+        homeend: homeend {
+            compatible = "zmk,behavior-tap-dance";
+            label = "HOMEEND";
+            #binding-cells = <0>;
+            bindings = <&kp HOME>, <&kp END>;
+
+            tapping-term-ms = <200>;
+        };
+
+        mouseclick: mouseclick {
+            compatible = "zmk,behavior-tap-dance";
+            label = "MOUSECLICK";
+            #binding-cells = <0>;
+            bindings = <&mkp LCLK>, <&mkp RCLK>;
+
+            tapping-term-ms = <200>;
+        };
+
+        mousescroll: mousescroll {
+            compatible = "zmk,behavior-tap-dance";
+            label = "MOUSESCROLL";
+            #binding-cells = <0>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+
+            tapping-term-ms = <200>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            display-name = "BAS";
-            // -----------------------------------------------------------------------------------------
-            // |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BKSP |
-            // | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
-            // | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | ESC  |
-            //                    | GUI | LWR | SPC |   | ENT | RSE  | ALT |
+            // -------------------------------------------------------------------------------------
+            // |  TAB |  Q  |  W  |  E  |  R  |  T  |       |  Y  |  U   |  I  |  O  |  P  |   BKSP    |
+            // | SHFT |  A  |  S  |  D  |  F  |  G  |       |  H  |  J   |  K  |  L  |  ;  |    '      |
+            // | CTRL |  Z  |  X  |  C  |  V  |  B  |       |  N  |  M   |  ,  |  .  |  /  | SHFT(RET) |
+            //                    | ALT | WIN | LWR |       | RSE | SPC  | RTN |
 
+            label = "base";
             bindings = <
-&kp TAB    &kp Q  &kp W  &kp E     &kp R  &kp T        &kp Y    &kp U  &kp I      &kp O    &kp P     &kp BSPC
-&kp LCTRL  &kp A  &kp S  &kp D     &kp F  &kp G        &kp H    &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
-&kp LSHFT  &kp Z  &kp X  &kp C     &kp V  &kp B        &kp N    &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp ESC
-                         &kp LGUI  &mo 1  &kp SPACE    &kp RET  &mo 2  &kp RALT
+&etkey          &kp Q                   &kp W  &kp E      &kp R     &kp T    &kp Y      &kp U      &kp I          &kp O      &kp P       &kp BSPC
+&kp CAPS        &kp A                   &kp S  &kp D      &kp F     &kp G    &kp H      &kp J      &kp K          &kp L      &kp SEMI    &kp SQT
+&kp LEFT_SHIFT  &mt LEFT_ALT BACKSLASH  &kp Z  &kp X      &kp C     &kp V    &kp B      &kp N      &kp M          &kp COMMA  &kp PERIOD  &lt 3 SLASH
+                                               &kp LCTRL  &kp LGUI  &mo 1    &lt 2 RET  &kp SPACE  &escand2layer
             >;
         };
 
         lower_layer {
-            display-name = "LOW";
-            // -----------------------------------------------------------------------------------------
-            // |  TAB |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  | BKSP |
-            // | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT |     |      |
-            // | SHFT |     |     |     |     |     |   |     |     |     |     |     |      |
-            //                    | GUI |     | SPC |   | ENT |     | ALT |
+            // ----------------------------------------------------------------------------------
+            // |    |  !  |  @  |  #  |  $  |  %  |          |  ^  |  &  |  *  |  (  |  )  |    DEL   |
+            // |    |  _  |  +  |  {  |  }  | "|" |          | LFT | PGUP|  UP |PGDN|  `  |     ~     |
+            // |    | ESC | GUI | ALT | CAPS|  "  |          | HOME| LFT | DWN | RGT| PRSC| SHFT(RET) |
+            //                        |     |     |           | ADJ | SPC |  RET  |
 
+            label = "lower";
             bindings = <
-&kp TAB     &kp N1        &kp N2        &kp N3        &kp N4        &kp N5          &kp N6    &kp N7    &kp N8    &kp N9     &kp N0  &kp BSPC
-&bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &trans  &trans
-&kp LSHFT   &trans        &trans        &trans        &trans        &trans          &trans    &trans    &trans    &trans     &trans  &trans
-                                        &kp LGUI      &trans        &kp SPACE       &kp RET   &trans    &kp RALT
+&trans  &kp N1     &kp NUMBER_2   &kp N3         &kp N4         &kp N5      &kp NUMBER_6    &kp N7        &kp N8              &kp N9     &kp N0             &kp DEL
+&trans  &kp MINUS  &kp INS        &brace         &pgch          &homeend    &kp LEFT_ARROW  &kp UP_ARROW  &kp DOWN            &kp RIGHT  &kp GRAVE          &kp RETURN
+&trans  &kp EQUAL  &kp LG(GRAVE)  &kp LA(GRAVE)  &kp BACKSPACE  &kp DEL     &kp MINUS       &kp EQUAL     &kp LS(UNDERSCORE)  &kp PLUS   &kp DOUBLE_QUOTES  &kp SQT
+                                  &kp TILDE      &kp LEFT_WIN   &trans      &kp ESCAPE      &kp HASH      &kp AT
             >;
         };
 
         raise_layer {
-            display-name = "RAI";
             // -----------------------------------------------------------------------------------------
-            // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BKSP |
-            // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
-            // | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
-            //                    | GUI |     | SPC |   | ENT |     | ALT |
+            // |    |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  | DEL |
+            // |    |  -  |  =  |  [  |  ]  |  \  |   | F1  | F2  | F3  | F4  | F5  | F6  |
+            // |    | ESC | GUI | ALT | CAPS|  "  |   | F7  | F8  | F9  | F10 | F11 | F12 |
+            //                       |     | ADJ | BKSP |    |     |
 
+            label = "raise";
             bindings = <
-&kp TAB    &kp EXCL  &kp AT  &kp HASH   &kp DLLR  &kp PRCNT    &kp CARET  &kp AMPS   &kp KP_MULTIPLY  &kp LPAR  &kp RPAR  &kp BSPC
-&kp LCTRL  &trans    &trans  &trans  &trans    &trans    &kp MINUS  &kp EQUAL  &kp LBKT         &kp RBKT  &kp BSLH  &kp GRAVE
-&kp LSHFT  &trans    &trans  &trans     &trans    &trans       &kp UNDER  &kp PLUS   &kp LBRC         &kp RBRC  &kp PIPE  &kp TILDE
-                             &kp LGUI   &studio_unlock    &kp SPACE    &kp RET    &studio_unlock     &kp RALT
+&kp ESC  &kp EXCLAMATION  &kp AT_SIGN  &kp HASH   &kp DOLLAR       &kp PERCENT    &kp CARET       &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp DEL
+&kp TAB  &kp MINUS        &kp EQUAL    &kp LBKT   &kp RBKT         &brace         &mmv MOVE_LEFT  &mmv MOVE_UP    &mmv MOVE_DOWN   &mmv MOVE_RIGHT       &mouseclick            &kp PG_UP
+&trans   &trans           &kp GRAVE    &mkp MCLK  &kp PRINTSCREEN  &kp INSERT     &kp BACKSPACE   &msc SCRL_LEFT  &msc SCRL_RIGHT  &msc SCRL_UP          &msc SCRL_DOWN         &kp PAGE_DOWN
+                                       &kp LCTRL  &kp LEFT_WIN     &kp ENTER      &trans          &kp SPACE       &tog 2
             >;
         };
-        extra_1 {
-            status = "reserved";
+
+        adjust_layer {
+            // -----------------------------------------------------------------------------------------
+            // | RGB BRI+ | RGB SAT+ | RGB HUE+ | RGB ANI+ |    | RGB TOG |   |  BT1  | BT2 | BT3 | BT4 | BT5 | BT CLR |
+            // | RGB BRI- | RGB SAT- | RGB HUE- | RGB ANI- |    |         |   |  USB  | BLE |     |     |     |        |
+            // |          |          |          |          |    | K_SLEEP |   | RESET |     |     |     |     |        |
+            //                                              |     |     |     |     |     |
+
+            label = "adjust";
+            bindings = <
+&kp F1      &kp F2        &kp F3           &kp F4   &kp F5   &kp F6         &bt BT_SEL 0   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_SEL 3   &bt BT_SEL 4  &bt BT_CLR
+&kp F7      &kp F8        &kp F9           &kp F10  &kp F11  &kp F12        &bt BT_DISC 0  &bt BT_DISC 1  &bt BT_DISC 2  &bt BT_DISC 4  &none         &none
+&kp LSHIFT  &kp LEFT_ALT  &kp LC(LA(DEL))  &trans   &none    &kp K_SLEEP    &sys_reset     &out OUT_USB   &out OUT_BLE   &none          &none         &none
+                                           &trans   &trans   &tog 7         &tog 4         &tog 5         &tog 6
+            >;
         };
 
-        extra_2 {
-            status = "reserved";
+        number {
+            label = "number";
+            bindings = <
+&trans  &trans    &trans        &trans    &trans     &trans    &trans  &kp N7        &kp NUMBER_8  &kp N9  &kp N0     &kp BACKSPACE
+&trans  &kp LEFT  &kp UP_ARROW  &kp DOWN  &kp RIGHT  &trans    &trans  &kp NUMBER_4  &kp N5        &kp N6  &kp PLUS   &kp STAR
+&trans  &trans    &trans        &trans    &trans     &trans    &tog 4  &kp NUMBER_1  &kp N2        &kp N3  &kp MINUS  &kp SLASH
+                                &trans    &trans     &trans    &trans  &trans        &trans
+            >;
         };
 
-        extra_3 {
-            status = "reserved";
+        symbol {
+            label = "symbol";
+            bindings = <
+&trans  &trans    &trans        &trans    &trans     &trans    &trans  &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
+&trans  &kp LEFT  &kp UP_ARROW  &kp DOWN  &kp RIGHT  &trans    &trans  &kp DOLLAR     &kp PERCENT   &kp CARET             &trans                 &trans
+&trans  &trans    &trans        &trans    &trans     &trans    &tog 5  &kp EXCL       &kp AT_SIGN   &kp HASH              &trans                 &trans
+                                &trans    &trans     &trans    &trans  &trans         &trans
+            >;
+        };
+
+        lock {
+            label = "lock";
+            bindings = <
+&none  &none  &none  &none  &none  &none    &none  &none  &none   &none  &none  &none
+&none  &none  &none  &none  &none  &none    &none  &none  &none   &none  &none  &none
+&none  &none  &none  &none  &none  &none    &none  &none  &none   &none  &none  &none
+                     &none  &none  &none    &none  &none  &tog 6
+            >;
+        };
+
+        Game {
+            bindings = <
+&kp ESCAPE  &kp Q         &kp W  &kp E      &kp R         &kp T        &trans     &trans        &trans     &trans  &trans  &kp LA(LC(DEL))
+&kp TAB     &kp A         &kp S  &kp D      &kp F         &kp G        &kp LC(C)  &kp LC(V)     &kp LC(X)  &trans  &trans  &trans
+&kp LSHFT   &kp LEFT_ALT  &kp Z  &kp X      &kp C         &kp V        &tog 7     &trans        &trans     &trans  &trans  &trans
+                                 &kp LCTRL  &kp LEFT_WIN  &kp SPACE    &kp SPACE  &kp LEFT_WIN  &trans
+            >;
         };
     };
 };
